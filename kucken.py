@@ -13,43 +13,49 @@ import csv
 
 def apply_osp(input_path):
     for file in os.listdir(input_path):
-        if file.endswith(".csv"):  # Nur .csv-Dateien verarbeiten
-            output_file_path = os.path.join(input_path, f"{file}")
+        if file.endswith(".csv"):
+            end_path = os.path.join(input_path, file)
             # csv_filename = os.path.splitext(relative_path)[0] + ".csv"  # .txt -> .csv
             # print(output_file_path)
             # # Zeige padnas an
-            # df = pd.read_csv(output_file_path)
-            # print(output_file_path, "+", df.head())
 
-            process_csv(output_file_path)
+            return end_path
 
 #dabei die ersten dreie Spalten ignoriert, die jeweiligen Spalten von Spalte 4 bis 10, 11 bis 17, usw. als eine Kategorie angesehen.
 
-def process_csv(input_file):
+def process_csv(end_path):
+    print(f"Eingelesene Datei wird verarbeitet: {end_path}")
+    df = pd.read_csv(end_path)
+    # df = df[1:] #erste Zeile version irgendwas wird gelöscht
     category_size = 7  # Anzahl der Spalten pro Kategorie
-    start_column = 3  # Spalten-Index ab dem wir starten (Spalte 4 in 0-basierter Indexierung)
+    print(df)
 
-    with open(input_file, 'r') as file:
-        reader = csv.reader(file)
+    print(df.columns)
 
-        for row_number, row in enumerate(reader, start=1):
-            if row_number >= 2:
-                data = row[3:]
+    sad
+    # Start ab der zweiten Zeile
+    for row_number, row in df.iloc[1:].iterrows():
+        # Daten ab Spalte 3
+        data = row.iloc[3:].tolist()
 
-                # Gruppiere die Spalten in Kategorien
-                categories = [
-                    data[i:i + category_size]
-                    for i in range(0, len(data), category_size)
-                ]
-                # Ausgabe der name encoded Gelenke
-                ergebnis = {categorie[0]: index + 1 for index, categorie in enumerate(categories)}
-                print(ergebnis)
-                # Ausgabe der one hot encoded Gelenke
-                ergebnisohe = {v: k for (k, v) in ergebnis.items()}
-                print("Categories:", ergebnisohe)
+        # Gruppiere die Spalten in Kategorien
+        categories = [
+            data[i:i + category_size]
+            for i in range(0, len(data), category_size)
+        ]
+
+        # Ausgabe der name-encoded Gelenke
+        ergebnis = {categorie[0]: index + 1 for index, categorie in enumerate(categories)}
+        print(ergebnis)
+
+        # Ausgabe der one-hot-encoded Gelenke
+        ergebnisohe = {v: k for k, v in ergebnis.items()}
+        print("Categories:", ergebnisohe)
 
 
 if __name__ == '__main__':
     input_path = 'C:/Users/Boris Grillborzer/PycharmProjects/IntelliRehabDS/SkeletonData_csv'
     # input_file_path = 'C:/Users/Boris Grillborzer/PycharmProjects/IntelliRehabDS/SkeletonData_csv/204_18_5_4_1_chair.csv'
-    apply_osp(input_path)
+    df = apply_osp(input_path)
+    print("h")
+    process_csv(df)
